@@ -1,6 +1,10 @@
 package memory
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type SortOrder string
 
@@ -21,6 +25,7 @@ type RerankerOpts struct {
 }
 
 type Memory struct {
+	ID        uuid.UUID
 	Query     string
 	Response  string
 	CreatedAt time.Time

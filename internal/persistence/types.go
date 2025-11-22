@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type RdbmsConversation struct {
+type Conversation struct {
 	ID        int       `db:"id"`
 	UUID      uuid.UUID `db:"uuid"`
 	Agent     string    `db:"agent"`
@@ -14,7 +14,7 @@ type RdbmsConversation struct {
 	CreatedAt time.Time `db:"created_at"`
 }
 
-type RdbmsMemory struct {
+type Memory struct {
 	ID             int       `db:"id"`
 	UUID           uuid.UUID `db:"uuid"`
 	ConversationID uuid.UUID `db:"conversation_id"`
@@ -24,8 +24,9 @@ type RdbmsMemory struct {
 }
 
 type VectorMemory struct {
-	UUID      uuid.UUID
-	Query     string
-	Response  string
-	CreatedAt time.Time
+	ID             uuid.UUID
+	ConversationID uuid.UUID
+	Query          string
+	Response       string
+	CreatedAt      time.Time
 }

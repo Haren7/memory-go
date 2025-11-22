@@ -16,9 +16,3 @@ type SemanticMemoryClientInterface interface {
 	Retrieve(ctx context.Context, input types.RetrieveSemanticMemoryInput) (types.RetrieveSemanticMemoryOutput, error)
 	RegisterConversation(ctx context.Context, input types.RegisterConversationInput) (types.RegisterConversationOutput, error)
 }
-
-type EpisodicMemoryClientInterface interface {
-	Store()
-	Retrieve()
-	RegisterConversation()
-}

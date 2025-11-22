@@ -10,7 +10,7 @@ type OpenAIService struct {
 	openAiClient *openai.Client
 }
 
-func NewOpenAIService(openAiClient *openai.Client) Service {
+func NewOpenAIService(openAiClient *openai.Client) ServiceInterface {
 	return &OpenAIService{
 		openAiClient: openAiClient,
 	}

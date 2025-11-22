@@ -2,50 +2,53 @@ package memory
 
 import (
 	"context"
+	"fmt"
 	"memory/internal/cache"
+	"memory/internal/summarizer"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type CachedService struct {
-	memoryRepo cache.MemoryRepoInterface
+	memoryRepo        cache.MemoryRepoInterface
+	summarizerService summarizer.ServiceInterface
 }
 
-func NewCachedService(memoryRepo cache.MemoryRepoInterface) ServiceInterface {
+func NewCachedService(memoryRepo cache.MemoryRepoInterface, summarizerService summarizer.ServiceInterface) ServiceInterface {
 	return &CachedService{
-		memoryRepo: memoryRepo,
+		memoryRepo:        memoryRepo,
+		summarizerService: summarizerService,
 	}
 }
 
-func (r *CachedService) Store(ctx context.Context, conversationID string, memories []Memory) error {
-	var cachedMemories []cache.Memory
-	for _, memory := range memories {
-		cachedMemories = append(cachedMemories, cache.Memory{
+func (r *CachedService) Store(ctx context.Context, conversationID uuid.UUID, query, response string) (uuid.UUID, error) {
+	memoryId, err := uuid.NewUUID()
+	if err != nil {
+		return uuid.UUID{}, fmt.Errorf("error creating memory id")
+	}
+	createdAt := time.Now()
+	summarizedResponse, err := r.summarizerService.Summarize(ctx, response)
+	if err != nil {
+		return uuid.UUID{}, fmt.Errorf("error summarizing response")
+	}
+	r.memoryRepo.SetOne(ctx, conversationID, memoryId, query, summarizedResponse, createdAt)
+	return memoryId, nil
+}
+
+func (r *CachedService) Retrieve(ctx context.Context, conversationID uuid.UUID, lastK int) ([]Memory, error) {
+	cacheMemories, err := r.memoryRepo.Get(ctx, conversationID, lastK)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving memories")
+	}
+	var memories []Memory
+	for _, memory := range cacheMemories {
+		memories = append(memories, Memory{
+			ID:        memory.ID,
 			Query:     memory.Query,
 			Response:  memory.Response,
 			CreatedAt: memory.CreatedAt,
 		})
 	}
-	err := r.memoryRepo.SetMany(ctx, conversationID, cachedMemories)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *CachedService) Retrieve(ctx context.Context, conversationID string, lastK int) ([]Memory, error) {
-	cachedMemories, err := r.memoryRepo.Get(ctx, conversationID, lastK)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var memories []Memory
-	for _, cachedMemory := range cachedMemories {
-		memories = append(memories, Memory{
-			Query:     cachedMemory.Query,
-			Response:  cachedMemory.Response,
-			CreatedAt: cachedMemory.CreatedAt,
-		})
-	}
-
 	return memories, nil
 }

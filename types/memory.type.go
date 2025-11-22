@@ -45,5 +45,3 @@ type RetrieveShortTermMemoryInput struct {
 type RetrieveShortTermMemoryOutput struct {
 	Memories []ShortTermMemory
 }
-
-// Episodic Memory
