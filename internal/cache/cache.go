@@ -47,7 +47,7 @@ func (r *InMemMemoryRepo) DeleteLastN(ctx context.Context, conversationID uuid.U
 func (r *InMemMemoryRepo) Get(ctx context.Context, conversationID uuid.UUID, lastK int) ([]Memory, error) {
 	memories, exists := r.memories[conversationID]
 	if !exists {
-		return nil, fmt.Errorf("error no memories")
+		return nil, fmt.Errorf("cache: error no memories")
 	}
 	return memories, nil
 }
@@ -55,7 +55,7 @@ func (r *InMemMemoryRepo) Get(ctx context.Context, conversationID uuid.UUID, las
 func (r *InMemMemoryRepo) Len(ctx context.Context, convesationID uuid.UUID) (int, error) {
 	memories, exists := r.memories[convesationID]
 	if !exists {
-		return 0, fmt.Errorf("error no memories")
+		return 0, fmt.Errorf("cache: error no memories")
 	}
 	return len(memories), nil
 }

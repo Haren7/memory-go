@@ -25,12 +25,12 @@ func NewCachedService(memoryRepo cache.MemoryRepoInterface, summarizerService su
 func (r *CachedService) Store(ctx context.Context, conversationID uuid.UUID, query, response string) (uuid.UUID, error) {
 	memoryId, err := uuid.NewUUID()
 	if err != nil {
-		return uuid.UUID{}, fmt.Errorf("error creating memory id")
+		return uuid.UUID{}, fmt.Errorf("cached: error creating memory id, %w", err)
 	}
 	createdAt := time.Now()
 	summarizedResponse, err := r.summarizerService.Summarize(ctx, response)
 	if err != nil {
-		return uuid.UUID{}, fmt.Errorf("error summarizing response")
+		return uuid.UUID{}, fmt.Errorf("cached: error summarizing response, %w", err)
 	}
 	r.memoryRepo.SetOne(ctx, conversationID, memoryId, query, summarizedResponse, createdAt)
 	return memoryId, nil
@@ -39,7 +39,7 @@ func (r *CachedService) Store(ctx context.Context, conversationID uuid.UUID, que
 func (r *CachedService) Retrieve(ctx context.Context, conversationID uuid.UUID, lastK int) ([]Memory, error) {
 	cacheMemories, err := r.memoryRepo.Get(ctx, conversationID, lastK)
 	if err != nil {
-		return nil, fmt.Errorf("error retrieving memories")
+		return nil, fmt.Errorf("cached: error retrieving memories, %w", err)
 	}
 	var memories []Memory
 	for _, memory := range cacheMemories {

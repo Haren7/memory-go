@@ -2,3 +2,7 @@ config.yml
 braindump.txt
 .vscode
 TODOS.txt
+/faiss-index
+memory
+memory.db
+memory.db.wal

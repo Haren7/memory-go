@@ -2,6 +2,7 @@ package embedding
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -10,7 +11,8 @@ type OpenAIService struct {
 	openAiClient *openai.Client
 }
 
-func NewOpenAIService(openAiClient *openai.Client) ServiceInterface {
+func NewOpenAIService(apiKey string) ServiceInterface {
+	openAiClient := openai.NewClient(apiKey)
 	return &OpenAIService{
 		openAiClient: openAiClient,
 	}
@@ -23,7 +25,7 @@ func (r *OpenAIService) EmbedOne(ctx context.Context, text string) (Embedding, e
 	}
 	response, err := r.openAiClient.CreateEmbeddings(ctx, input)
 	if err != nil {
-		return Embedding{}, err
+		return Embedding{}, fmt.Errorf("openai: error embedding one, %w", err)
 	}
 	embedding := response.Data[0].Embedding
 	return Embedding{
@@ -39,7 +41,7 @@ func (r *OpenAIService) EmbedMany(ctx context.Context, texts []string) ([]Embedd
 	}
 	resp, err := r.openAiClient.CreateEmbeddings(ctx, input)
 	if err != nil {
-		return []Embedding{}, err
+		return []Embedding{}, fmt.Errorf("openai: error embedding many, %w", err)
 	}
 	var embeddings []Embedding
 	for _, emb := range resp.Data {

@@ -4,6 +4,7 @@ import "time"
 
 // Semantic Memory
 type SemanticMemory struct {
+	ID        string
 	Query     string
 	Response  string
 	CreatedAt time.Time
@@ -15,6 +16,10 @@ type StoreSemanticMemoryInput struct {
 	Response       string
 }
 
+type StoreSemanticMemoryOutput struct {
+	MemoryID string
+}
+
 type RetrieveSemanticMemoryInput struct {
 	ConversationID string
 	Query          string
@@ -22,26 +27,33 @@ type RetrieveSemanticMemoryInput struct {
 }
 
 type RetrieveSemanticMemoryOutput struct {
-	Memories []SemanticMemory
+	Memories        []Memory
+	SimilarMemories []SemanticMemory
 }
 
 // Short Term Memory
-type ShortTermMemory struct {
+type Memory struct {
+	ID        string
 	Query     string
 	Response  string
 	CreatedAt time.Time
 }
 
 type StoreShortTermMemoryInput struct {
-	Query    string
-	Response string
+	Query          string
+	Response       string
+	ConversationID string
+}
+
+type StoreShortTermMemoryOutput struct {
+	MemoryID string
 }
 
 type RetrieveShortTermMemoryInput struct {
-	ConversationID string
 	TopK           int
+	ConversationID string
 }
 
 type RetrieveShortTermMemoryOutput struct {
-	Memories []ShortTermMemory
+	Memories []Memory
 }

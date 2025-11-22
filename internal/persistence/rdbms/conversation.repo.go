@@ -3,6 +3,7 @@ package rdbms
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"memory/internal/persistence"
 	"time"
 
@@ -23,7 +24,10 @@ func (r *ConversationRepo) FetchOne(ctx context.Context, conversationID uuid.UUI
 	var conversation persistence.Conversation
 	err := row.Scan(&conversation.ID, &conversation.UUID, &conversation.Agent, &conversation.User, &conversation.CreatedAt)
 	if err != nil {
-		return persistence.Conversation{}, err
+		if err == sql.ErrNoRows {
+			return persistence.Conversation{}, fmt.Errorf("repo: conversation not found for id %s, %w", conversationID, err)
+		}
+		return persistence.Conversation{}, fmt.Errorf("repo: error fetching conversation for id %s, %w", conversationID, err)
 	}
 	return conversation, nil
 }
@@ -31,7 +35,7 @@ func (r *ConversationRepo) FetchOne(ctx context.Context, conversationID uuid.UUI
 func (r *ConversationRepo) InsertOne(ctx context.Context, agent string, user string, conversationID uuid.UUID, createdAt time.Time) (int, error) {
 	result, err := r.db.ExecContext(ctx, "INSERT INTO conversations (uuid, agent, user, created_at) VALUES ($1, $2, $3, $4)", conversationID, agent, user, createdAt)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("repo: error inserting conversation, %w", err)
 	}
 	lastInsertId, _ := result.LastInsertId()
 	return int(lastInsertId), nil

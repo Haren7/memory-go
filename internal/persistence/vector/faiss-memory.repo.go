@@ -2,6 +2,7 @@ package vector
 
 import (
 	"context"
+	"fmt"
 	"memory/internal/embedding"
 	"memory/internal/persistence"
 	"time"
@@ -15,24 +16,26 @@ type FaissMemoryRepo struct {
 	rdbmsMemoryRepo persistence.MemoryRepoInterface
 }
 
-func NewFaissMemoryRepo(faissClient *FaissClient) persistence.VectorMemoryRepoInterface {
+func NewFaissMemoryRepo(faissClient *FaissClient, embeddingClient embedding.ServiceInterface, rdbmsMemoryRepo persistence.MemoryRepoInterface) persistence.VectorMemoryRepoInterface {
 	return &FaissMemoryRepo{
-		faissClient: faissClient,
+		faissClient:     faissClient,
+		embeddingClient: embeddingClient,
+		rdbmsMemoryRepo: rdbmsMemoryRepo,
 	}
 }
 
 func (r *FaissMemoryRepo) Index(ctx context.Context, conversationID, memoryID uuid.UUID, query, response string, createdAt time.Time) (persistence.VectorMemory, error) {
 	memoryId, err := r.rdbmsMemoryRepo.InsertOne(ctx, conversationID, memoryID, query, response, createdAt)
 	if err != nil {
-		return persistence.VectorMemory{}, err
+		return persistence.VectorMemory{}, fmt.Errorf("faiss: error inserting memory, %w", err)
 	}
 	embedding, err := r.embeddingClient.EmbedOne(ctx, query)
 	if err != nil {
-		return persistence.VectorMemory{}, err
+		return persistence.VectorMemory{}, fmt.Errorf("faiss: error embedding query, %w", err)
 	}
 	err = r.faissClient.Index(ctx, conversationID.String(), memoryId, embedding)
 	if err != nil {
-		return persistence.VectorMemory{}, err
+		return persistence.VectorMemory{}, fmt.Errorf("faiss: error indexing memory, %w", err)
 	}
 	return persistence.VectorMemory{
 		ID:       uuid.New(),
@@ -44,7 +47,7 @@ func (r *FaissMemoryRepo) Index(ctx context.Context, conversationID, memoryID uu
 func (r *FaissMemoryRepo) Search(ctx context.Context, conversationID uuid.UUID, query string, topK int) ([]persistence.VectorMemory, error) {
 	embedding, err := r.embeddingClient.EmbedOne(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("faiss: error embedding query, %w", err)
 	}
 	faissResponse, err := r.faissClient.Search(ctx, conversationID.String(), embedding, topK)
 	var memoryIds []int
@@ -53,7 +56,7 @@ func (r *FaissMemoryRepo) Search(ctx context.Context, conversationID uuid.UUID, 
 	}
 	rdbmsMemories, err := r.rdbmsMemoryRepo.FetchMany(ctx, memoryIds)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("faiss: error fetching memories, %w", err)
 	}
 	var vectorMemories []persistence.VectorMemory
 	for _, memory := range rdbmsMemories {
