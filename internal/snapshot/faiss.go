@@ -3,8 +3,9 @@ package snapshot
 import (
 	"context"
 	"fmt"
-	"memory/internal/blobstore"
-	"memory/internal/persistence/vector"
+
+	"github.com/haren7/minimal-memory/internal/blobstore"
+	"github.com/haren7/minimal-memory/internal/persistence/vector"
 )
 
 type faissManager struct {

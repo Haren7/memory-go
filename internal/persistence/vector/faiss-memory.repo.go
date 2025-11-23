@@ -3,9 +3,10 @@ package vector
 import (
 	"context"
 	"fmt"
-	"memory/internal/embedding"
-	"memory/internal/persistence"
 	"time"
+
+	"github.com/haren7/minimal-memory/internal/embedding"
+	"github.com/haren7/minimal-memory/internal/persistence"
 
 	"github.com/google/uuid"
 )
@@ -38,7 +39,7 @@ func (r *FaissMemoryRepo) Index(ctx context.Context, conversationID, memoryID uu
 		return persistence.VectorMemory{}, fmt.Errorf("faiss: error indexing memory, %w", err)
 	}
 	return persistence.VectorMemory{
-		ID:       uuid.New(),
+		ID:       memoryID,
 		Query:    query,
 		Response: response,
 	}, nil

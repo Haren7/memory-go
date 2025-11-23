@@ -1,13 +1,14 @@
-package main
+package examples
 
 import (
 	"context"
 	"fmt"
-	"memory/clients"
-	"memory/types"
+
+	"github.com/haren7/minimal-memory/clients"
+	"github.com/haren7/minimal-memory/types"
 )
 
-func exampleSemanticMemory() {
+func ExampleSemanticMemory() {
 	ctx := context.Background()
 	semanticMemoryClient, err := clients.NewSemanticMemoryClient(clients.SemanticMemoryClientConfig{
 		ContextWindowSize: 10,

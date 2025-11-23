@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"memory/internal/cache"
-	"memory/internal/conversation"
-	"memory/internal/memory"
-	"memory/internal/persistence/rdbms"
-	"memory/internal/summarizer"
-	"memory/types"
+
+	"github.com/haren7/minimal-memory/internal/cache"
+	"github.com/haren7/minimal-memory/internal/conversation"
+	"github.com/haren7/minimal-memory/internal/memory"
+	"github.com/haren7/minimal-memory/internal/persistence/rdbms"
+	"github.com/haren7/minimal-memory/internal/summarizer"
+	"github.com/haren7/minimal-memory/types"
 
 	"github.com/google/uuid"
 )

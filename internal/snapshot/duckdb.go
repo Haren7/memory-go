@@ -3,8 +3,9 @@ package snapshot
 import (
 	"context"
 	"fmt"
-	"memory/internal/blobstore"
-	"memory/internal/persistence/rdbms"
+
+	"github.com/haren7/minimal-memory/internal/blobstore"
+	"github.com/haren7/minimal-memory/internal/persistence/rdbms"
 )
 
 type duckdbManager struct {

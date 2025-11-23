@@ -1,13 +1,14 @@
-package main
+package examples
 
 import (
 	"context"
 	"fmt"
-	"memory/clients"
-	"memory/types"
+
+	"github.com/haren7/minimal-memory/clients"
+	"github.com/haren7/minimal-memory/types"
 )
 
-func exampleShortTermMemory() {
+func ExampleShortTermMemory() {
 	ctx := context.Background()
 	shortTermMemoryClient, err := clients.NewShortTermMemoryClient(clients.ShortTermMemoryClientConfig{})
 	if err != nil {

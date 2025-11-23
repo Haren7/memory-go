@@ -2,7 +2,8 @@ package clients
 
 import (
 	"context"
-	"memory/types"
+
+	"github.com/haren7/minimal-memory/types"
 )
 
 type ShortTermMemoryClient interface {

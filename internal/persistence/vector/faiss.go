@@ -5,10 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"memory/internal/embedding"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/haren7/minimal-memory/internal/embedding"
 
 	"github.com/DataIntelligenceCrew/go-faiss"
 )
@@ -34,7 +35,8 @@ func NewFaissClient() *FaissClient {
 func (r *FaissClient) Index(ctx context.Context, conversationID string, id int, embedding embedding.Embedding) error {
 	index, exists := r.conversationIDVsIndex[conversationID]
 	if !exists {
-		index, err := faiss.IndexFactory(embedding.Dim, "IDMap,Flat", 1)
+		var err error
+		index, err = faiss.IndexFactory(embedding.Dim, "IDMap,Flat", 1)
 		if err != nil {
 			return fmt.Errorf("error creating idmap + flat index with dim %d - %w", embedding.Dim, err)
 		}

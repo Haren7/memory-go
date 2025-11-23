@@ -4,8 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"memory/internal/persistence"
 	"time"
+
+	"github.com/haren7/minimal-memory/internal/persistence"
 
 	"github.com/google/uuid"
 )

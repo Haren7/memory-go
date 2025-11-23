@@ -3,9 +3,10 @@ package memory
 import (
 	"context"
 	"fmt"
-	"memory/internal/cache"
-	"memory/internal/summarizer"
 	"time"
+
+	"github.com/haren7/minimal-memory/internal/cache"
+	"github.com/haren7/minimal-memory/internal/summarizer"
 
 	"github.com/google/uuid"
 )

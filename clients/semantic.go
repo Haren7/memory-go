@@ -4,13 +4,14 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"memory/internal/conversation"
-	"memory/internal/embedding"
-	"memory/internal/memory"
-	"memory/internal/persistence/rdbms"
-	"memory/internal/persistence/vector"
-	"memory/internal/summarizer"
-	"memory/types"
+
+	"github.com/haren7/minimal-memory/internal/conversation"
+	"github.com/haren7/minimal-memory/internal/embedding"
+	"github.com/haren7/minimal-memory/internal/memory"
+	"github.com/haren7/minimal-memory/internal/persistence/rdbms"
+	"github.com/haren7/minimal-memory/internal/persistence/vector"
+	"github.com/haren7/minimal-memory/internal/summarizer"
+	"github.com/haren7/minimal-memory/types"
 
 	"github.com/google/uuid"
 )
